@@ -47,7 +47,7 @@
 
 ---
 
-## Story 12 — VotingPanel + RoundReveal components
+## Story 23 — VotingPanel + RoundReveal components
 
 **Depends on:** Story 11
 
@@ -56,11 +56,22 @@
 - `src/components/VotingPanel.test.tsx`
 - `src/components/RoundReveal.tsx`
 - `src/components/RoundReveal.test.tsx`
+
+**Acceptance Criteria:**
+- `VotingPanel` accepts `players: { id: string; name: string }[]`, `currentPlayerId: string`, `roundId: string`. Renders each player's name as a clickable button (excluding `currentPlayerId`). Clicking a player calls `submitVote({ roundId, voterId: currentPlayerId, votedForId: player.id })`; after a vote is cast, all buttons are disabled and a `"Vote cast!"` message is shown.
+- `RoundReveal` accepts `players: { id: string; name: string; isAI: boolean }[]`, `votes: { voterId: string; votedForId: string }[]`, `scores: { playerId: string; delta: number }[]`, `aiPlayerId: string`. Renders: the AI player's name with label `"🤖 This was the AI!"`, vote counts per player (e.g. `"Alice: 3 votes"`), and score deltas for each player (e.g. `"+3"` in green, `"0"` in gray).
+- `VotingPanel.test.tsx`: renders player buttons excluding self; clicking a button calls `submitVote` with the correct `votedForId`; after clicking, all buttons are disabled and `"Vote cast!"` is visible.
+- `RoundReveal.test.tsx`: renders `"🤖 This was the AI!"` with the AI player's name; shows vote counts; shows `"+3"` for a player with delta 3.
+
+---
+
+## Story 24 — Round results page (reveal view)
+
+**Depends on:** Story 23, Story 18
+
+**Files to create:**
 - `src/app/game/[code]/results/page.tsx`
 
 **Acceptance Criteria:**
-- `VotingPanel` accepts `players: { id: string; name: string }[]`, `currentPlayerId: string`, `roundId: string`. Renders each player's name as a clickable button (excluding `currentPlayerId`). Clicking a player calls `submitVote({ roundId, voterId: currentPlayerId, votedForId: player.id })`; after a vote is cast, all buttons are disabled and a "Vote cast!" message is shown.
-- `RoundReveal` accepts `players: { id: string; name: string; isAI: boolean }[]`, `votes: { voterId: string; votedForId: string }[]`, `scores: { playerId: string; delta: number }[]`, `aiPlayerId: string`. Renders: the AI player's name with label `"🤖 This was the AI!"`, vote counts per player (e.g. `"Alice: 3 votes"`), and score deltas for each player (e.g. `"+3"` in green, `"0"` in gray).
-- `results/page.tsx` is a server component that fetches game state; when `round.status === "REVEAL"` renders `<RoundReveal ... />` with the round's data.
-- `VotingPanel.test.tsx`: renders player buttons excluding self; clicking a button calls `submitVote` with the correct `votedForId`; after clicking, all buttons are disabled and `"Vote cast!"` is visible.
-- `RoundReveal.test.tsx`: renders `"🤖 This was the AI!"` with the AI player's name; shows vote counts; shows `"+3"` for a player with delta 3.
+- `export const dynamic = 'force-dynamic'` is declared at the top of the file (DB read per request).
+- `results/page.tsx` is a server component that fetches game state from `/api/game/[code]/state`. When the most recent round has `status === "REVEAL"`, renders `<RoundReveal players={...} votes={round.votes} scores={computedScores} aiPlayerId={...} />`. When `game.status === "FINISHED"` shows a `"Game over — see leaderboard"` message. When round is not in REVEAL status shows `"Reveal pending..."`.

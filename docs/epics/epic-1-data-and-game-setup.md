@@ -51,7 +51,7 @@
 
 ---
 
-## Story 4 — Home page (create / join UI)
+## Story 16 — Home page form components (CreateGameForm + JoinGameForm)
 
 **Depends on:** Story 3
 
@@ -61,12 +61,21 @@
 - `src/components/JoinGameForm.tsx`
 - `src/components/JoinGameForm.test.tsx`
 
+**Acceptance Criteria:**
+- `CreateGameForm` renders a text input (label "Your name") and a "Create Game" button. On submit calls `createGame({ hostName })` and on success navigates to `/lobby/[code]` (using `useRouter().push`). Whitespace-only name shows error `"Name is required"` without calling `createGame`.
+- `JoinGameForm` renders two text inputs (labels "Game code" and "Your name") and a "Join Game" button. On submit calls `joinGame({ code, playerName })`; on success navigates to `/lobby/[code]`. Whitespace-only inputs or code length ≠ 6 shows `"Invalid code or name"`.
+- `CreateGameForm.test.tsx`: renders form, enters name, submit button enabled; submitting whitespace name shows error, does NOT call `createGame`.
+- `JoinGameForm.test.tsx`: renders form, submitting empty inputs shows error; submitting valid code + name calls `joinGame`.
+
+---
+
+## Story 17 — Home page (renders form components)
+
+**Depends on:** Story 16
+
 **Files to modify:**
 - `src/app/page.tsx`
 
 **Acceptance Criteria:**
-- `CreateGameForm` renders a text input (label "Your name") and a "Create Game" button. On submit calls `createGame({ hostName })` and on success navigates to `/lobby/[code]` (using `useRouter().push`). Whitespace-only name shows error `"Name is required"` without calling `createGame`.
-- `JoinGameForm` renders two text inputs (labels "Game code" and "Your name") and a "Join Game" button. On submit calls `joinGame({ code, playerName })`; on success navigates to `/lobby/[code]`. Whitespace-only inputs or code length ≠ 6 shows `"Invalid code or name"`.
-- `page.tsx` renders both `<CreateGameForm />` and `<JoinGameForm />` side by side with a heading "Almost Human".
-- `CreateGameForm.test.tsx`: renders form, enters name, submit button enabled; submitting whitespace name shows error, does NOT call `createGame`.
-- `JoinGameForm.test.tsx`: renders form, submitting empty inputs shows error; submitting valid code + name calls `joinGame`.
+- `page.tsx` renders both `<CreateGameForm />` and `<JoinGameForm />` side by side with a heading `"Almost Human"`.
+- No DB access in this page — static render is fine; do NOT add `export const dynamic = 'force-dynamic'`.

@@ -18,33 +18,56 @@
 
 ---
 
-## Story 14 — Leaderboard component + final results page
+## Story 25 — Leaderboard component
 
-**Depends on:** Story 13, Story 12
+**Depends on:** (none)
 
 **Files to create:**
 - `src/components/Leaderboard.tsx`
 - `src/components/Leaderboard.test.tsx`
 
-**Files to modify:**
-- `src/app/game/[code]/results/page.tsx`
-
 **Acceptance Criteria:**
 - `Leaderboard` accepts `players: { id: string; name: string; score: number; title: string | null; isAI: boolean }[]`. Renders players sorted by `score` descending; each row shows `name`, `score`, and `title` (if present). The AI player row shows `"🤖"` prefix on the name.
-- `results/page.tsx` (modify): when `game.status === "FINISHED"` renders `<Leaderboard players={game.players} />` with a heading `"Game Over!"`.
 - `Leaderboard.test.tsx`: renders players sorted by score descending; player with title shows it; AI player name is prefixed with `"🤖"`; player with no title renders their row without a title column.
 
 ---
 
-## Story 15 — State polling route + client-side auto-refresh
+## Story 26 — Final game-over page (leaderboard view)
 
-**Depends on:** Story 5, Story 7
+**Depends on:** Story 25, Story 13, Story 24
+
+**Files to modify:**
+- `src/app/game/[code]/results/page.tsx`
+
+**Acceptance Criteria:**
+- `results/page.tsx` already has `export const dynamic = 'force-dynamic'` (from Story 24).
+- When `game.status === "FINISHED"`, replace the game-over stub with a full render: `<h1>Game Over!</h1>` heading followed by `<Leaderboard players={game.players} />`.
+- The REVEAL branch (from Story 24) continues to render `<RoundReveal ... />` when `round.status === "REVEAL"`.
+
+---
+
+## Story 27 — State route cache-control header
+
+**Depends on:** Story 18
 
 **Files to modify:**
 - `src/app/api/game/[code]/state/route.ts`
+
+**Acceptance Criteria:**
+- `state/route.ts` response includes a `Cache-Control: no-store` header on both the 200 and 404 responses so Next.js never caches the state poll.
+- (Note: Story 18 already adds this header; this story is a no-op if Story 18's AC included it. If so, close this story as covered.)
+
+---
+
+## Story 28 — Game page client-side polling
+
+**Depends on:** Story 22, Story 27
+
+**Files to modify:**
 - `src/app/game/[code]/page.tsx`
 
 **Acceptance Criteria:**
-- `state/route.ts` (update): add a `Cache-Control: no-store` response header so clients always get fresh state.
-- `game/[code]/page.tsx` (update): add a `"use client"` directive; use `useEffect` + `setInterval` to poll `/api/game/[code]/state` every **3000ms**; update local state on each response; stop polling when `game.status === "FINISHED"`.
-- No test file change required for this story — it is a pure integration/infrastructure layer.
+- Convert `game/[code]/page.tsx` to a client component (`"use client"` directive at top).
+- Use `useEffect` + `setInterval` to poll `/api/game/[code]/state` every **3000ms**; on each poll update local `gameState` via `useState`.
+- Stop polling (clear interval) when `game.status === "FINISHED"` or on unmount.
+- The rest of the render logic (ChatPanel, MessageInput, Waiting message) remains driven by `gameState`.
