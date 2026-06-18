@@ -46,22 +46,9 @@
 
 ---
 
-## Story 27 — State route cache-control header
-
-**Depends on:** Story 18
-
-**Files to modify:**
-- `src/app/api/game/[code]/state/route.ts`
-
-**Acceptance Criteria:**
-- `state/route.ts` response includes a `Cache-Control: no-store` header on both the 200 and 404 responses so Next.js never caches the state poll.
-- (Note: Story 18 already adds this header; this story is a no-op if Story 18's AC included it. If so, close this story as covered.)
-
----
-
 ## Story 28 — Game page client-side polling
 
-**Depends on:** Story 22, Story 27
+**Depends on:** Story 22, Story 18
 
 **Files to modify:**
 - `src/app/game/[code]/page.tsx`
