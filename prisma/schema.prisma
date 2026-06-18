@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Game session ──────────────────────────────────────────────
+model Game {
+  id        String   @id @default(cuid())
+  code      String   @unique          // 6-char join code shown to players
+  status    GameStatus @default(LOBBY)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  players   Player[]
+  rounds    Round[]
+}
+
+enum GameStatus {
+  LOBBY
+  IN_PROGRESS
+  FINISHED
+}
+
+// ── Player (human or AI) ──────────────────────────────────────
+model Player {
+  id        String   @id @default(cuid())
+  gameId    String
+  name      String
+  isAI      Boolean  @default(false)
+  score     Int      @default(0)
+  title     String?
+  joinedAt  DateTime @default(now())
+
+  game      Game     @relation(fields: [gameId], references: [id])
+  messages  Message[]
+  votes     Vote[]   @relation("VoterVotes")
+  votedBy   Vote[]   @relation("VotedForVotes")
+
+  @@index([gameId])
+}
+
+// ── Round ─────────────────────────────────────────────────────
+model Round {
+  id        String   @id @default(cuid())
+  gameId    String
+  number    Int
+  prompt    String
+  status    RoundStatus @default(CHAT)
+  createdAt DateTime @default(now())
+
+  game      Game     @relation(fields: [gameId], references: [id])
+  messages  Message[]
+  votes     Vote[]
+
+  @@unique([gameId, number])
+  @@index([gameId])
+}
+
+enum RoundStatus {
+  CHAT
+  VOTING
+  REVEAL
+}
+
+// ── Chat message ──────────────────────────────────────────────
+model Message {
+  id        String   @id @default(cuid())
+  roundId   String
+  playerId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  round     Round    @relation(fields: [roundId], references: [id])
+  player    Player   @relation(fields: [playerId], references: [id])
+
+  @@index([roundId])
+}
+
+// ── Vote ──────────────────────────────────────────────────────
+model Vote {
+  id          String   @id @default(cuid())
+  roundId     String
+  voterId     String
+  votedForId  String
+  createdAt   DateTime @default(now())
+
+  round       Round    @relation(fields: [roundId], references: [id])
+  voter       Player   @relation("VoterVotes",    fields: [voterId],    references: [id])
+  votedFor    Player   @relation("VotedForVotes", fields: [votedForId], references: [id])
+
+  @@unique([roundId, voterId])    // one vote per player per round
+  @@index([roundId])
+}
