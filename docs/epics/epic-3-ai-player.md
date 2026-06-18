@@ -4,7 +4,7 @@
 
 ---
 
-## Story 3.1 — AI player message generator lib
+## Story 8 — AI player message generator lib
 
 **Depends on:** (none)
 
@@ -22,9 +22,9 @@
 
 ---
 
-## Story 3.2 — generateAIMessage server action
+## Story 9 — generateAIMessage server action
 
-**Depends on:** Story 3.1, Story 2.2
+**Depends on:** Story 8, Story 6
 
 **Files to create:**
 - `src/app/actions/ai.ts`

@@ -4,7 +4,7 @@
 
 ---
 
-## Story 4.1 — Scoring + title logic lib
+## Story 10 — Scoring + title logic lib
 
 **Depends on:** (none)
 
@@ -32,9 +32,9 @@
 
 ---
 
-## Story 4.2 — submitVote + revealRound actions
+## Story 11 — submitVote + revealRound actions
 
-**Depends on:** Story 4.1, Story 2.2
+**Depends on:** Story 10, Story 6
 
 **Files to modify:**
 - `src/app/actions/round.ts`
@@ -47,9 +47,9 @@
 
 ---
 
-## Story 4.3 — VotingPanel + RoundReveal components
+## Story 12 — VotingPanel + RoundReveal components
 
-**Depends on:** Story 4.2
+**Depends on:** Story 11
 
 **Files to create:**
 - `src/components/VotingPanel.tsx`

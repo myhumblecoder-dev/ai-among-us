@@ -4,7 +4,7 @@
 
 ---
 
-## Story 1.1 — Prisma client singleton + game-code util
+## Story 1 — Prisma client singleton + game-code util
 
 **Depends on:** (none)
 
@@ -20,7 +20,7 @@
 
 ---
 
-## Story 1.2 — Validation schemas
+## Story 2 — Validation schemas
 
 **Depends on:** (none)
 
@@ -35,9 +35,9 @@
 
 ---
 
-## Story 1.3 — Game creation + join server actions
+## Story 3 — Game creation + join server actions
 
-**Depends on:** Story 1.1, Story 1.2
+**Depends on:** Story 1, Story 2
 
 **Files to create:**
 - `src/app/actions/game.ts`
@@ -51,9 +51,9 @@
 
 ---
 
-## Story 1.4 — Home page (create / join UI)
+## Story 4 — Home page (create / join UI)
 
-**Depends on:** Story 1.3
+**Depends on:** Story 3
 
 **Files to create:**
 - `src/components/CreateGameForm.tsx`

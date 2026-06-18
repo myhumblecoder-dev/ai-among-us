@@ -4,29 +4,27 @@
 
 ---
 
-## Story 2.1 — Lobby page + PlayerList component
+## Story 5 — Lobby page + PlayerList component
 
-**Depends on:** Story 1.3
+**Depends on:** Story 3
 
 **Files to create:**
 - `src/app/lobby/[code]/page.tsx`
 - `src/components/PlayerList.tsx`
 - `src/components/PlayerList.test.tsx`
-
-**Files to modify:**
 - `src/app/api/game/[code]/state/route.ts`
 
 **Acceptance Criteria:**
 - `src/app/api/game/[code]/state/route.ts` is a Next.js route handler that reads `code` from params, calls `db.game.findUnique({ where: { code }, include: { players: true, rounds: { include: { messages: { include: { player: true } }, votes: true } } } })`, and returns the full game state as JSON (200) or `{ error: "Not found" }` (404).
-- `PlayerList` accepts `players: { id: string; name: string; isAI: boolean }[]` and renders each player's name as a list item; when `revealAI` prop is `true`, the AI player row includes text `"(AI)"` after the name.
+- `PlayerList` accepts `players: { id: string; name: string; isAI: boolean }[]` and `revealAI?: boolean` and renders each player's name as a list item; when `revealAI` is `true`, the AI player row includes text `"(AI)"` after the name.
 - `lobby/[code]/page.tsx` is a server component that fetches `/api/game/[code]/state` (using the `code` param), renders `<PlayerList players={game.players} />`, shows the game code in a `<code>` element, and renders a "Start Game" button (calls `startGame`) visible only when `game.players.length >= 2`.
 - `PlayerList.test.tsx` covers: renders all player names; does NOT show "(AI)" when `revealAI` is false; shows "(AI)" next to AI player name when `revealAI` is true.
 
 ---
 
-## Story 2.2 — Round actions (start + message submission)
+## Story 6 — Round actions (start + message submission)
 
-**Depends on:** Story 1.3
+**Depends on:** Story 3
 
 **Files to create:**
 - `src/app/actions/round.ts`
@@ -39,9 +37,9 @@
 
 ---
 
-## Story 2.3 — Game page + ChatPanel + MessageInput
+## Story 7 — Game page + ChatPanel + MessageInput
 
-**Depends on:** Story 2.1, Story 2.2
+**Depends on:** Story 5, Story 6
 
 **Files to create:**
 - `src/app/game/[code]/page.tsx`

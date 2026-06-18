@@ -4,9 +4,9 @@
 
 ---
 
-## Story 5.1 — Title assignment at game end
+## Story 13 — Title assignment at game end
 
-**Depends on:** Story 4.1, Story 1.3
+**Depends on:** Story 10, Story 3
 
 **Files to modify:**
 - `src/app/actions/game.ts`
@@ -14,13 +14,13 @@
 
 **Acceptance Criteria:**
 - Add `finishGame({ gameId })` to `game.ts`: loads all rounds + votes + players for the game; calls `assignTitles` from `src/lib/scoring.ts`; for each player with an assigned title calls `db.player.update({ where: { id: playerId }, data: { title } })`; calls `db.game.update({ where: { id: gameId }, data: { status: "FINISHED" } })`; returns `{ ok: true }`.
-- `game.test.ts` additional tests (add to existing file): `finishGame` calls `db.game.update` with `status: "FINISHED"`; calls `db.player.update` for each player that receives a title from `assignTitles` (mock `assignTitles` to return a predictable array).
+- `game.test.ts` additional tests (add to existing file): `finishGame` calls `db.game.update` with `status: "FINISHED"`; calls `db.player.update` for each player that receives a title from `assignTitles` (mock `assignTitles` to return `[{ playerId: "p1", title: "Champion" }]` and assert `db.player.update` was called with `{ where: { id: "p1" }, data: { title: "Champion" } }`).
 
 ---
 
-## Story 5.2 — Leaderboard component + final results page
+## Story 14 — Leaderboard component + final results page
 
-**Depends on:** Story 5.1
+**Depends on:** Story 13, Story 12
 
 **Files to create:**
 - `src/components/Leaderboard.tsx`
@@ -36,15 +36,15 @@
 
 ---
 
-## Story 5.3 — State polling route + client-side auto-refresh
+## Story 15 — State polling route + client-side auto-refresh
 
-**Depends on:** Story 2.1
+**Depends on:** Story 5, Story 7
 
 **Files to modify:**
 - `src/app/api/game/[code]/state/route.ts`
 - `src/app/game/[code]/page.tsx`
 
 **Acceptance Criteria:**
-- `state/route.ts` (update): add a `Cache-Control: no-store` header to the response so clients always get fresh state.
+- `state/route.ts` (update): add a `Cache-Control: no-store` response header so clients always get fresh state.
 - `game/[code]/page.tsx` (update): add a `"use client"` directive; use `useEffect` + `setInterval` to poll `/api/game/[code]/state` every **3000ms**; update local state on each response; stop polling when `game.status === "FINISHED"`.
-- No test file change required for this story — it's a pure integration layer.
+- No test file change required for this story — it is a pure integration/infrastructure layer.
