@@ -24,7 +24,7 @@ describe('ai-player', () => {
 
     vi.mocked(generateText).mockResolvedValue({
       text: '  I am a huge fan of sushi. It is so fresh!  ',
-    })
+    } as unknown as Awaited<ReturnType<typeof generateText>>)
 
     const result = await generateAIMessage({ prompt, priorMessages })
 
@@ -49,7 +49,7 @@ describe('ai-player', () => {
 
     vi.mocked(generateText).mockResolvedValue({
       text: 'Why did the chicken cross the road? To get to the other side!',
-    })
+    } as unknown as Awaited<ReturnType<typeof generateText>>)
 
     await generateAIMessage({ prompt, priorMessages })
 
@@ -69,7 +69,7 @@ describe('ai-player', () => {
     const prompt = 'Test prompt'
     vi.mocked(generateText).mockResolvedValue({
       text: '   Spaced response   ',
-    })
+    } as unknown as Awaited<ReturnType<typeof generateText>>)
 
     const result = await generateAIMessage({ prompt, priorMessages: [] })
     expect(result).toBe('Spaced response')
